@@ -1,5 +1,4 @@
 import time
-#random array producer
 import sys 
 import random
 import numpy as nprand
