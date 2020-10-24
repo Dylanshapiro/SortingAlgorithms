@@ -17,7 +17,6 @@ class AlgoResult:
     def toString(self):
         return "AlgoName:", self.algoName,"ArraySize:", self.arraySize, "ArrayType:",self.arrayType, "SecondsInEpochs:", self.secondsInEpoch 
 
-
 def getTime():
     secondsSinceEpoch = time.time()
     return secondsSinceEpoch
@@ -26,44 +25,46 @@ def printIfArrayIsInOrder(arr):
     if (not(all(arr[i] <= arr[i+1] for i in range(len(arr)-1)))): 
         print("arrat is NOT in order")
 
-
 def printIfArraySizeHasChanged(origArr, arr):
     if(not (len(arr) == len(origArr))):
         print("arrays are not the same len ")
-        print(arr)
         print("orig size = ", len(origArr), "afterSortSize =", len(arr))
 
 def appendResultTolist(arrylength,typeOfArray,algoName, elapsedTime):
     listofresults.append(AlgoResult(algoName,arrylength,typeOfArray,elapsedTime))
 
-
-
 def timeThisSortAlgo(sortingAlgorithm, array, typeOfArray, AlgoName):
     arr = array.tolist()
     t1 = getTime() 
-    sortingAlgorithm(arr)
-    elapsed = (getTime() - t1)
-    #print("this is the original array: ")
-    #printArray(array)
-    #print("this is the array after sorting:")
-    #printArray(arr)
-    printIfArrayIsInOrder(arr)
-    #printIfArraySizeHasChanged(array.tolist(), arr)
-    #print("elapsed time in epochs:",  elapsed)
+    error = False
+    try:
+        sortingAlgorithm(arr)
+    except Exception as e:
+        error = True
+        trace = e
+    if error:
+        elapsed = trace
+    else:
+        elapsed = (getTime() - t1)
+        printIfArrayIsInOrder(arr)
+        printIfArraySizeHasChanged(array.tolist(), arr)
     appendResultTolist(len(array), typeOfArray, AlgoName, elapsed)
 
 def timeThisSortAlgoReturnValue(sortingAlgorithm, array, typeOfArray, AlgoName):
     t1 = getTime() 
     origArray = array.tolist()
-    r = sortingAlgorithm(origArray)
-    elapsed = (getTime() - t1)
-    #print("this is the original array: ")
-    #printArray(array.tolist())
-    #print("this is the array after sorting:")
-    #printArray(r)
-    printIfArrayIsInOrder(r)
-    #printIfArraySizeHasChanged(origArray, r)
-    #print("elapsed time in epochs:",  elapsed)
+    error = False
+    try:
+        r = sortingAlgorithm(origArray)
+    except Exception as e:
+        error = True
+        trace = e
+    if error:
+        elapsed = trace
+    else:
+        elapsed = (getTime() - t1)
+        printIfArrayIsInOrder(r)
+        printIfArraySizeHasChanged(origArray, r)
     appendResultTolist(len(array), typeOfArray, AlgoName, elapsed)
 
 def printArray(arr):
@@ -72,8 +73,6 @@ def printArray(arr):
 
 #SOURCE 
 #https://www.geeksforgeeks.org/python-program-for-bubble-sort/
-# Python program for implementation of Bubble Sort 
-  
 def bubbleSort(arr): 
     n = len(arr) 
   
@@ -89,13 +88,9 @@ def bubbleSort(arr):
             # than the next element 
             if arr[j] > arr[j+1] : 
                 arr[j], arr[j+1] = arr[j+1], arr[j] 
-  
-# Driver code to test above 
+
 #SOURCE :
 #https://www.geeksforgeeks.org/python-program-for-insertion-sort/
-# Python program for implementation of Insertion Sort 
-  
-# Function to do insertion sort 
 def insertionSort(arr): 
   
     # Traverse through 1 to len(arr) 
@@ -111,16 +106,9 @@ def insertionSort(arr):
                 arr[j+1] = arr[j] 
                 j -= 1
         arr[j+1] = key 
-  
-# Driver code to test above   
-# This code is contributed by Mohit Kumra 
 
 #SOURCE 
 #https://www.geeksforgeeks.org/python-program-for-selection-sort/
-# Python program for implementation of Selection 
-# Sort 
-  
-# Traverse through all array elements 
 def selection_sort(arr):
     for i in range(len(arr)): 
 
@@ -134,12 +122,9 @@ def selection_sort(arr):
         # Swap the found minimum element with  
         # the first element         
         arr[i], arr[min_idx] = arr[min_idx], arr[i] 
-# Driver code to test above  
 
 #SOURCE 
 #https://www.geeksforgeeks.org/python-program-for-merge-sort/
-  
-# Python program for implementation of MergeSort 
 def specialMergeSort(arr):
     if (len(arr)<8):
         print("specialMergeSort Algorithm used insertionSort")
@@ -148,7 +133,6 @@ def specialMergeSort(arr):
     else:
         print("specialMergeSort Algorithm used MergeSort")
         mergeSort(arr)
-
 
 def mergeSort(arr): 
     if len(arr) >1: 
@@ -181,14 +165,9 @@ def mergeSort(arr):
             arr[k] = R[j] 
             j+= 1
             k+= 1
-  
-# Driver code to test above 
-# This code is contributed by Mohit Kumra 
+
 #SOURCE 
 #https://www.geeksforgeeks.org/heap-sort/
-# Python program for implementation of heap Sort 
-# To heapify subtree rooted at index i. 
-# n is size of heap 
 def heapify(arr, n, i): 
     largest = i # Initialize largest as root 
     l = 2 * i + 1     # left = 2*i + 1 
@@ -211,7 +190,6 @@ def heapify(arr, n, i):
         # Heapify the root. 
         heapify(arr, n, largest) 
   
-# The main function to sort an array of given size 
 def heapSort(arr): 
     n = len(arr) 
   
@@ -223,18 +201,13 @@ def heapSort(arr):
     for i in range(n-1, 0, -1): 
         arr[i], arr[0] = arr[0], arr[i] # swap 
         heapify(arr, i, 0) 
-  
-# Driver code to test above 
-# This code is contributed by Mohit Kumra 
-
 
 class Node: 
     def __init__(self,key): 
         self.left = None
         self.right = None
         self.val = key 
-  
-# A utility function to insert a new node with the given key 
+   
 def insert(root,node): 
     if root is None: 
         root = node 
@@ -249,6 +222,7 @@ def insert(root,node):
                 root.left = node 
             else: 
                 insert(root.left, node) 
+
 def inorder(root, res):
     # Recursive travesal 
     if root:
@@ -269,32 +243,20 @@ def treesort(arr):
     return res
 
 def testAllAlgorithms(arr, ArrayType):
-
-    print ("Sorted array is bubbleSort:") 
+ 
     timeThisSortAlgo(bubbleSort,arr, ArrayType, "bubbleSort") 
 
-    print ("Sorted array is insertionSort:") 
     timeThisSortAlgo(insertionSort, arr, ArrayType, "insertionSort") 
 
-    print ("Sorted array selection_sort")   
     timeThisSortAlgo(selection_sort, arr, ArrayType, "selection_sort")
 
-    print ("Sorted array is mergeSort") 
     timeThisSortAlgo(mergeSort, arr, ArrayType, "mergeSort") 
 
-    print ("Sorted array is heapSort") 
     timeThisSortAlgo(heapSort, arr, ArrayType, "heapSort") 
      
-    if (not (ArrayType == "FULL SORT" and len(arr) > 995) ):
-        print ("Sorted array is treesort") 
-        timeThisSortAlgoReturnValue(treesort,arr, ArrayType, "treesort")
-    else:
-        appendResultTolist(len(arr),"FULL SORT", "treesort","RecursionError: maximum recursion depth exceeded")
-        print("skiped the Treesort algo because RecursionError: maximum recursion depth exceeded in comparison MAX: 995")
+    timeThisSortAlgoReturnValue(treesort,arr, ArrayType, "treesort")
 
-    print ("Sorted array is specialMergeSort") 
     timeThisSortAlgo(specialMergeSort, arr, ArrayType, "specialMergeSort") 
-
 
 def createHalfSortedArr(arr):
     #TODO half sort the arr
@@ -304,19 +266,20 @@ listofresults =[]
 
 numbersToPickfrom =1000
 sizeOfArray  = 1000 #random.randint(0,1000)
-if(numbersToPickfrom < sizeOfArray):
-    print("you cant do that ")
-    arr = nprand.random.choice(sizeOfArray,sizeOfArray,replace=False)
-else:
-    arr = nprand.random.choice(numbersToPickfrom,sizeOfArray,replace=False)
 
-testAllAlgorithms(arr, "RANDOM")
+if(numbersToPickfrom < sizeOfArray):
+    randomArr = nprand.random.choice(sizeOfArray,sizeOfArray,replace=False)
+else:
+    randomArr = nprand.random.choice(numbersToPickfrom,sizeOfArray,replace=False)
+
+ 
+testAllAlgorithms(randomArr, "RANDOM")
 
 #halfSortedArray = createHalfSortedArr(arr)
 
 #testAllAlgorithms(halfSortedArray, "HALF SORT")
 
-sortedArr = nprand.sort(arr)
+sortedArr = nprand.sort(randomArr)
 testAllAlgorithms(sortedArr, "FULL SORT")
 
 for result in listofresults:
