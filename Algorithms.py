@@ -3,6 +3,7 @@ import sys
 import random
 import numpy as nprand
 import csv
+import multiprocessing
 #############################################################################
 #   SOURCES :                                                               #
 #   https://www.geeksforgeeks.org/left-leaning-red-black-tree-insertion/    # 
@@ -41,7 +42,7 @@ def printIfArraySizeHasChanged(origArr, arr):
         print("orig size = ", len(origArr), "afterSortSize =", len(arr))
 
 def appendResultTolist(arrylength,typeOfArray,algoName, elapsedTime):
-    listofresults.append(AlgoResult(algoName,arrylength,typeOfArray,elapsedTime))
+    writeResultToCSVFile(AlgoResult(algoName,arrylength,typeOfArray,elapsedTime))
 
 def timeThisSortAlgoArray(sortingAlgorithm, array, typeOfArray, AlgoName):
     arr = array.tolist()
@@ -109,11 +110,9 @@ def selection_sort(arr):
 
 def specialMergeSort(arr):
     if (len(arr)<8):
-        print("specialMergeSort Algorithm used insertionSort")
         insertionSort(arr)
         return None
     else:
-        print("specialMergeSort Algorithm used MergeSort")
         mergeSort(arr)
 
 def mergeSort(arr): 
@@ -224,24 +223,20 @@ def llrbSort(node):
     return arr
 
 def testAllAlgorithms(arr, ArrayType):
-    timeThisSortAlgoArray(bubbleSort,arr, ArrayType, "bubbleSort") 
-    timeThisSortAlgoArray(insertionSort, arr, ArrayType, "insertionSort") 
-    timeThisSortAlgoArray(selection_sort, arr, ArrayType, "selection_sort")
-    timeThisSortAlgoArray(mergeSort, arr, ArrayType, "mergeSort") 
-    timeThisSortAlgoArray(heapSort, arr, ArrayType, "heapSort") 
-    timeThisSortAlgoArray(specialMergeSort, arr, ArrayType, "specialMergeSort") 
-    timeThisSortAlgoRoot(treesort, buildBST(arr,ArrayType), ArrayType, "treesort")
-    timeThisSortAlgoRoot(llrbSort, buildLLRB(arr,ArrayType), ArrayType, "llrbSort")
+    arraySortingAlgorithms = [bubbleSort ,insertionSort, selection_sort,mergeSort, heapSort, specialMergeSort]
+    for arraySortingAlgorithm in arraySortingAlgorithms:
+        timeThisSortAlgoArray(arraySortingAlgorithm,arr, ArrayType, arraySortingAlgorithm.__qualname__) 
+    timeThisSortAlgoRoot(treesort, buildBST(arr,ArrayType), ArrayType, treesort.__qualname__)
+    timeThisSortAlgoRoot(llrbSort, buildLLRB(arr,ArrayType), ArrayType, llrbSort.__qualname__)
 
 def createHalfSortedArr(arr):
     return  nprand.partition(arr,(int) (len(arr)/2))
 
-def createCSVWithData(listofresults):
-    with open("testfile.csv", "w+") as csvfile:
-        for result in listofresults:
-            spamwriter = csv.writer(csvfile, delimiter=',')
-            spamwriter.writerow(result.toArray())
-            print(result.toString())
+def writeResultToCSVFile(result):
+    with open("testfile.csv", "a") as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',')
+        spamwriter.writerow(result.toArray())
+        print(result.toString())
 
 def createRandomArray(sizeOfArray, numbersToPickfrom=None):
     if numbersToPickfrom == None:
@@ -321,11 +316,10 @@ class LLRBTREE(object):
             self.inorder(node.left,arr)
             arr.append(node.data) 
             self.inorder(node.right,arr)  
+import concurrent.futures 
 
-
-listofresults =[]
-testAllAlgorithmsArrayTypes(createRandomArray(1000))
-testAllAlgorithmsArrayTypes(createRandomArray(10000))
-testAllAlgorithmsArrayTypes(createRandomArray(100000))
-testAllAlgorithmsArrayTypes(createRandomArray(1000000))
-createCSVWithData(listofresults)
+if __name__ == '__main__': 
+    x = [10, 1000, 10000]
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        results = [executor.submit(testAllAlgorithmsArrayTypes, createRandomArray(number)) for number in x]
+    
