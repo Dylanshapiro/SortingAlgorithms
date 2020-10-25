@@ -2,6 +2,7 @@ import time
 import sys 
 import random
 import numpy as nprand
+import csv
 
 class AlgoResult:
     def __init__(self, algoName, arraySize, arrayType, secondsInEpoch):
@@ -10,7 +11,7 @@ class AlgoResult:
         self.arrayType = arrayType
         self.secondsInEpoch = secondsInEpoch
 
-    def listResults(self):
+    def toArray(self):
         return [self.algoName, self.arraySize, self.arrayType, self.secondsInEpoch]
 
     def toString(self):
@@ -241,6 +242,10 @@ def treesort(arr):
     inorder(root,res)
     return res
 
+def llrbSort(arr):
+    #TODO: create llrbsort 
+    return arr
+
 def testAllAlgorithms(arr, ArrayType):
  
     timeThisSortAlgo(bubbleSort,arr, ArrayType, "bubbleSort") 
@@ -257,30 +262,41 @@ def testAllAlgorithms(arr, ArrayType):
 
     timeThisSortAlgo(specialMergeSort, arr, ArrayType, "specialMergeSort") 
 
+    timeThisSortAlgo(llrbSort, arr, ArrayType, "llrbSort")
+
+
 def createHalfSortedArr(arr):
-    #TODO half sort the arr
-    return arr    
+    return  nprand.partition(arr,(int) (len(arr)/2))
+
+def createCSVWithData(listofresults):
+    with open("testfile.csv", "w+") as csvfile:
+        for result in listofresults:
+            spamwriter = csv.writer(csvfile, delimiter=',')
+            spamwriter.writerow(result.toArray())
+            print(result.toString())
+
+def createRandomArray(sizeOfArray, numbersToPickfrom=None):
+    if numbersToPickfrom == None:
+        numbersToPickfrom =sizeOfArray
+    else:
+        numbersToPickfrom =numbersToPickfrom
+    sizeOfArray  = sizeOfArray #random.randint(0,1000)
+
+    if(numbersToPickfrom < sizeOfArray):
+        return nprand.random.choice(sizeOfArray,sizeOfArray,replace=False)
+    else:
+        return nprand.random.choice(numbersToPickfrom,sizeOfArray,replace=False)
+
+def testAllAlgorithms_(randomArr):
+    testAllAlgorithms(randomArr, "RANDOM")
+    testAllAlgorithms(createHalfSortedArr(randomArr), "HALF SORT")
+    testAllAlgorithms(nprand.sort(randomArr), "FULL SORT")
 
 listofresults =[]
-
-numbersToPickfrom =1000
-sizeOfArray  = 1000 #random.randint(0,1000)
-
-if(numbersToPickfrom < sizeOfArray):
-    randomArr = nprand.random.choice(sizeOfArray,sizeOfArray,replace=False)
-else:
-    randomArr = nprand.random.choice(numbersToPickfrom,sizeOfArray,replace=False)
-
- 
-testAllAlgorithms(randomArr, "RANDOM")
-
-#halfSortedArray = createHalfSortedArr(arr)
-
-#testAllAlgorithms(halfSortedArray, "HALF SORT")
-
-sortedArr = nprand.sort(randomArr)
-testAllAlgorithms(sortedArr, "FULL SORT")
-
-for result in listofresults:
-    ## TODO append to excel sheet 
-    print(result.toString())
+randomArr = createRandomArray(1000)
+testAllAlgorithms_(randomArr)
+randomArr = createRandomArray(10000)
+testAllAlgorithms_(randomArr)
+randomArr = createRandomArray(50000)
+testAllAlgorithms_(randomArr)
+createCSVWithData(listofresults)
