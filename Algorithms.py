@@ -319,7 +319,7 @@ class LLRBTREE(object):
 import concurrent.futures 
 
 if __name__ == '__main__': 
-    x = [10, 1000, 10000]
+    x = [1000, 10000, 100000]
     with concurrent.futures.ProcessPoolExecutor() as executor:
         results = [executor.submit(testAllAlgorithmsArrayTypes, createRandomArray(number)) for number in x]
     
